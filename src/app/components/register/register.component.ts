@@ -31,16 +31,17 @@ export class RegisterComponent {
   }
 
   registerForm = new FormGroup({
+    email: new FormControl(this.email, [Validators.required, Validators.minLength(4)]),
     password: new FormControl(this.password, [Validators.required, Validators.minLength(8)]),
     repeatedPassword: new FormControl(this.repeatedPassword, [Validators.required, Validators.minLength(8)])
   }, { validators: passwordMatchValidator });
   register() {
     if (this.registerForm.valid) {
-      const { password, repeatedPassword } = this.registerForm.value;
+      const { email, password, repeatedPassword } = this.registerForm.value;
       console.log(`Login: ${this.email} / ${password}`);
       this.authService
     .register({
-      email: this.email as string,
+      email: email as string,
       password: password as string,
       repeatedPassword: repeatedPassword as string
     })
@@ -51,5 +52,8 @@ export class RegisterComponent {
     } else {
       console.log('Form is not valid');
     }
+  }
+  redirectToLogin() {
+    this.router.navigate(['/login']);
   }
 }

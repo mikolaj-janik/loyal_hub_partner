@@ -6,7 +6,12 @@
     <h3 style="color: aliceblue;">Register</h3>
     <hr style="color: grey;">
     <form [formGroup]="registerForm" (ngSubmit)="register()">
-      <input class="form-control mb-3" type="text" name="email" placeholder="Email" [value]="this.email" disabled/>
+      <input class="form-control mb-3" type="text" name="email" placeholder="Email" formControlName="email"/>
+      
+      <div *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty)" class="alert alert-danger mt-1">
+        <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required.</span>
+        <span *ngIf="registerForm.get('email')?.errors?.['minlength']">Email must be at least 4 characters long.</span>
+      </div>
 
       <input class="form-control mb-3" type="password" name="password" placeholder="Password" formControlName="password"/>
 
@@ -24,9 +29,12 @@
       <div *ngIf="authService.isError()" class="alert alert-danger mt-1">
         <span>Incorrect email or password</span>
       </div>
-      
-      <hr style="color: gray;">
+    
       <button class="btn btn-primary" type="submit">Sign up</button>
+
+      <hr style="color: gray;">
+      <p style="color: rgb(198, 198, 198);">Already have an account?</p>
+      <button class="btn btn-info" (click)="redirectToLogin()">Sign In</button>
     </form>
   </div>
 </div>

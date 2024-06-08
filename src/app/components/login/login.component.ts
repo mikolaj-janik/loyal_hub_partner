@@ -40,4 +40,7 @@ export class LoginComponent {
       console.log('Form is not valid');
     }
   }
+  redirectToRegister() {
+    this.router.navigate(['/register']);
+  }
 }

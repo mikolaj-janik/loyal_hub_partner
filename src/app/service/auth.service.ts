@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
@@ -9,7 +9,6 @@ import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
 export class AuthService {
 
   private readonly JWT_TOKEN = 'JWT_TOKEN'
-  private loggedUser?: string;
   private hasErrors = false;
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
   public isLoggedIn$ = this.isAuthenticatedSubject.asObservable();
@@ -21,9 +20,9 @@ export class AuthService {
 
   login(user: { email: string, password: string }): Observable<any>{
     return this.http
-    .post('http://localhost:8081/api/login_check', user)
+    .post('http://localhost:8080/api/login_check', user)
     .pipe(
-      tap((tokens: any)=>this.doLoginUser(user.email, tokens.access_token)),
+      tap((tokens: any)=>this.doLoginUser(user.email, tokens.token)),
       catchError((error) => {
         if (error.status === 401) {
           this.hasErrors = true;
@@ -34,19 +33,16 @@ export class AuthService {
         }
       })
       
-    )
+    );
   }
 
   register(user: { email: string, password: string, repeatedPassword: string}): Observable<any>{
 
-    const user1 = {
-      password: user.password,
-      repeatedPassword: user.repeatedPassword
-    };
     return this.http
-    .post(`http://localhost:8081/api/clients/${user.email}/completeRegistration`, user1)
+    .post(`http://localhost:8080/api/register`, user)
     .pipe(
-      tap((tokens: any)=>this.doLoginUser(user.email, tokens.access_token)),
+      tap((tokens: any) => {
+        this.doLoginUser(user.email, tokens.token)}),
       catchError((error) => {
         if (error.status === 401) {
           this.hasErrors = true;
@@ -58,13 +54,16 @@ export class AuthService {
       })
     )
   }
-  acceptInvitation(activationUrl: string): Observable<any> {
-    const url = `http://localhost:8081/api/invitations/${activationUrl}/accept`;
-    return this.http.post(url, {}); 
-  }
 
-  private doLoginUser(email: string, token: any) {
-    this.loggedUser = email;
+  addLoyaltyProgram(program: {loyaltyProgramName: string}): Observable<any> {
+    const headers = new HttpHeaders({'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.getJwtToken()}`
+    });
+    return this.http.post<any>('http://localhost:8080/api/loyalty_programs', program, { headers })
+  }
+  
+
+  private doLoginUser(email: string, token: string) {
     this.isAuthenticatedSubject.next(true);
     this.hasErrors = false;
     this.storeJwtToken(token);
@@ -74,6 +73,16 @@ export class AuthService {
     localStorage.setItem(this.JWT_TOKEN, jwt);
   }
 
+  private getJwtToken(): string | null {
+    return localStorage.getItem(this.JWT_TOKEN);
+  }
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.getJwtToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+  }
   authenticateByToken(jwt: string) {
     localStorage.setItem(this.JWT_TOKEN, jwt);
     this.isAuthenticatedSubject.next(true);
@@ -88,11 +97,6 @@ export class AuthService {
     localStorage.removeItem(this.JWT_TOKEN);
     this.isAuthenticatedSubject.next(false);
     this.routerService.navigate(['/login']);
-  }
-
-  getCurrentAuthUser() {
-  
-    return this.http.get('https://api.escuelajs.co/api/v1/auth/profile');
   }
 
   isLoggedIn() {

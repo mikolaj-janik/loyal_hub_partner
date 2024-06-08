@@ -24,9 +24,10 @@
             <div *ngIf="authService.isError()" class="alert alert-danger mt-1">
                 <span>Incorrect email or password</span>
             </div>
-            
-            <hr style="color: gray;">
             <button class="btn btn-primary" type="submit">Sign in</button>
+            <hr style="color: grey;">
+            <p style="color: rgb(198, 198, 198);">You don't have an account?</p>
+            <button (click)="redirectToRegister()" class="btn btn-info">Sign up</button>
         </form>
     </div>
 </div>   

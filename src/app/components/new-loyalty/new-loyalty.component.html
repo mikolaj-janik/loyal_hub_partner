@@ -1,0 +1,18 @@
+<div class="row justify-content-center">
+    <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-8 rounded-5 py-2 px-4" style="background-color: aliceblue; margin-top: 110px;">
+        <div class="col">
+            <h3 class="mt-3 mb-3" style="color: rgb(59, 59, 59); font-weight: 300;">Add new loyalty program</h3>
+        </div>
+        <form [formGroup]="loyaltyForm" (ngSubmit)="addNewLoyaltyProgram()">
+            
+            <input type="text" placeholder="Name" formControlName="name" class="form-control my-4"/>
+
+            <div *ngIf="loyaltyForm.get('name')?.invalid && (loyaltyForm.get('name')?.dirty || loyaltyForm.get('name')?.touched)" class="alert alert-danger mt-1">
+                <span *ngIf="loyaltyForm.get('name')?.errors?.['required']">Name is required.</span>
+                <span *ngIf="loyaltyForm.get('name')?.errors?.['minlength']">Name must be at least 3 characters long.</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mb-4" data-mdb-ripple-init>Publish</button>
+        </form>
+    </div>
+</div>
