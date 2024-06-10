@@ -1,0 +1,11 @@
+.equal-width {
+    width: 50%;
+  }
+.equal-width3 {
+    width: 33%;
+}
+
+.text-center {
+    justify-content: center;
+    align-items: center;
+}

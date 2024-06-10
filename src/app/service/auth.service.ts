@@ -10,6 +10,7 @@ export class AuthService {
 
   private readonly JWT_TOKEN = 'JWT_TOKEN';
   private readonly USER_EMAIL = 'USER_EMAIL';
+  private readonly PROGRAM_ID = 'PROGRAM_ID'
   private hasErrors = false;
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
   public isLoggedIn$ = this.isAuthenticatedSubject.asObservable();
@@ -79,6 +80,22 @@ export class AuthService {
     });
     return this.http.post<any>('http://localhost:8080/api/loyalty_programs', program, { headers })
   }
+
+  addLoyaltyLevel(loyaltyProgramUuid: string, loyaltyLevel: { loyaltyLevelName: string, valueFactor: number }): Observable<any> {
+    const url = `http://localhost:8080/api/loyalty_programs/${loyaltyProgramUuid}/loyalty_program_levels`;
+    const headers = this.getAuthHeaders();
+    return this.http.post<any>(url, loyaltyLevel, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            this.hasErrors = true;
+            return throwError('Unauthorized access');
+          } else {
+            return throwError('An error occurred while adding the loyalty level');
+          }
+        })
+      );
+  }
   
   sendInvitation(loyaltyProgramUuid: string, clientEmail: string): Observable<any> {
     const url = `http://localhost:8080/api/loyalty_programs/${loyaltyProgramUuid}/invitations`;
@@ -114,6 +131,7 @@ export class AuthService {
       'Authorization': `Bearer ${token}`
     });
   }
+
   authenticateByToken(jwt: string) {
     localStorage.setItem(this.JWT_TOKEN, jwt);
     this.isAuthenticatedSubject.next(true);
@@ -136,6 +154,14 @@ export class AuthService {
 
   getCurrentUserEmail(): string | null {
     return localStorage.getItem(this.USER_EMAIL);
+  }
+
+  storeProgramId(programId: string) {
+    localStorage.setItem(this.PROGRAM_ID, programId);
+  }
+
+  getCurrentProgramId(): string | null {
+    return localStorage.getItem(this.PROGRAM_ID);
   }
 
 }

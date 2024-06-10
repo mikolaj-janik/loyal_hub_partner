@@ -1,0 +1,26 @@
+<div class="row justify-content-center">
+    <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-8 rounded-5 py-2 px-4" style="background-color: aliceblue; margin-top: 110px;">
+        <div class="col">
+            <h3 class="mt-3 mb-3" style="color: rgb(100, 100, 100); font-weight: 300;">Invite client</h3>
+        </div>
+        <form [formGroup]="levelForm" (ngSubmit)="addNewLevel()">
+            <div class="form-group mb-3">
+              <label for="loyaltyLevelName">Loyalty Level Name</label>
+              <input type="text" id="loyaltyLevelName" formControlName="loyaltyLevelName" class="form-control">
+              <div *ngIf="levelForm.get('loyaltyLevelName')?.invalid && (levelForm.get('loyaltyLevelName')?.dirty || levelForm.get('loyaltyLevelName')?.touched)" class="alert alert-danger mt-1">
+                <span *ngIf="levelForm.get('loyaltyLevelName')?.errors?.['required']">Name is required!</span>
+              </div>
+            </div>
+          
+            <div class="form-group mb-3">
+              <label for="valueFactor">Value Factor</label>
+              <input type="number" id="valueFactor" formControlName="valueFactor" class="form-control">
+              <div *ngIf="levelForm.get('valueFactor')?.invalid && (levelForm.get('valueFactor')?.dirty || levelForm.get('valueFactor')?.touched)" class="alert alert-danger mt-1">
+                <span *ngIf="levelForm.get('valueFactor')?.errors?.['required']">Value Factor is required!</span>
+                <span *ngIf="levelForm.get('valueFactor')?.errors?.['min']">Value Factor must be greater than zero!</span>
+              </div>
+            </div>
+          
+            <button type="submit" class="btn btn-primary" [disabled]="levelForm.invalid">Add Level</button>
+          </form>
+</div>
