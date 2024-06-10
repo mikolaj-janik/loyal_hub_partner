@@ -1,0 +1,26 @@
+<div class="row justify-content-center">
+    <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-8 rounded-5 py-2 px-4" style="background-color: aliceblue; margin-top: 110px;">
+        <div class="col">
+            <h3 class="mt-3 mb-3" style="color: rgb(100, 100, 100); font-weight: 300;">Invite client</h3>
+        </div>
+        <form [formGroup]="invitationForm" (ngSubmit)="inviteClient()">
+            <label for="program-select">Choose your program</label>
+            <select class="form-control mb-3" id="program-select" formControlName="programId">
+                <option *ngFor="let program of this.programs" [value]="program.id">{{ program.name }}</option>
+            </select>
+
+            <div *ngIf="invitationForm.get('programId')?.invalid && (invitationForm.get('programId')?.dirty || invitationForm.get('programId')?.touched)" class="alert alert-danger mt-1">
+                <span *ngIf="invitationForm.get('programId')?.errors?.['required']">The field is required!</span>
+            </div>
+
+            <input class="form-control mb-3" type="text" formControlName="clientEmail" placeholder="Client's email">
+
+            <div *ngIf="invitationForm.get('clientEmail')?.invalid && (invitationForm.get('clientEmail')?.dirty || invitationForm.get('clientEmail')?.touched)" class="alert alert-danger mt-1">
+                <span *ngIf="invitationForm.get('clientEmail')?.errors?.['required']">Client's email is required</span>
+                <span *ngIf="invitationForm.get('clientEmail')?.errors?.['email']">The provided string is not an email!</span>
+                <span *ngIf="invitationForm.get('clientEmail')?.errors?.['minlength']">The email must be at least 3 characters long!</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mb-4" data-mdb-ripple-init>Send invitation</button>
+        </form>
+</div>

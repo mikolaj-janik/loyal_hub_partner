@@ -1,0 +1,7 @@
+@if(isLoggedIn && !isInvitationRoute) {
+        <button class="nav-link" (click)="inviteClient()" style="color: rgb(200, 200, 200);">Invite client</button>
+} 
+@if(isLoggedIn && isInvitationRoute) {
+        <button class="nav-link" (click)="inviteClient()" style="color: rgb(255, 255, 255);">Invite client</button>
+}
+

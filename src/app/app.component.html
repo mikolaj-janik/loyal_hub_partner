@@ -1,39 +1,37 @@
-
-  
- 
-<nav  style="z-index: 1;
-              min-height: 58.59px;"
-        class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav style="z-index: 1; min-height: 58.59px;" class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <button
-        data-mdb-collapse-init
-        class="navbar-toggler"
-        type="button"
-        data-mdb-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <i class="fas fa-bars"></i>    
-      </button>
+        <button
+            data-mdb-collapse-init
+            class="navbar-toggler"
+            type="button"
+            data-mdb-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <i class="fas fa-bars"></i>    
+        </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <a class="navbar-brand mt-2 mt-lg-0" href="#">
-            <i class="fas fa-book-open">LoyaltyHub</i>
-        </a>
-      </div>
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <app-loyalty-button></app-loyalty-button>
-      </ul>
-      <div class="d-flex align-items-center">
-        
-        <app-logout-button></app-logout-button>
-      </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                <i class="fas fa-book-open">LoyaltyHub</i>
+                <div style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">partner</div>
+            </a>
+
+           
+            <ul class="navbar-nav ms-5 mb-2 mb-lg-0">
+                <li class="nav-item me-2">
+                    <app-invitation-button></app-invitation-button>
+                </li>
+                <li class="nav-item me-5">
+                    <app-loyalty-button></app-loyalty-button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="d-flex align-items-center ms-auto">
+            <app-logout-button></app-logout-button>
+        </div>
     </div>
-  </nav>
-  <router-outlet></router-outlet>
-   
- 
-
-  
-    
+</nav>
+<router-outlet></router-outlet>

@@ -1,11 +1,7 @@
 @if(isLoggedIn && !isLoyaltyRoute) {
-    <li class="nav-item mx-5">
-        <button class="nav-link" (click)="addNewLoyaltyProgram()" style="color: rgb(200, 200, 200);">Add new loyalty program</button>
-    </li>
+    <button class="nav-link" (click)="addNewLoyaltyProgram()" style="color: rgb(200, 200, 200);">New program</button>
 } 
 @if(isLoggedIn && isLoyaltyRoute) {
-    <li class="nav-item mx-5">
-        <button class="nav-link" (click)="addNewLoyaltyProgram()" style="color: rgb(255, 255, 255);">Add new loyalty program</button>
-    </li>
+    <button class="nav-link" (click)="addNewLoyaltyProgram()" style="color: rgb(255, 255, 255);">New program</button>
 }
 

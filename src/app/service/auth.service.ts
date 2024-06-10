@@ -1,18 +1,20 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private readonly JWT_TOKEN = 'JWT_TOKEN'
+  private readonly JWT_TOKEN = 'JWT_TOKEN';
+  private readonly USER_EMAIL = 'USER_EMAIL';
   private hasErrors = false;
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
   public isLoggedIn$ = this.isAuthenticatedSubject.asObservable();
   private routerService = inject(Router);
+  
 
   private http = inject(HttpClient);
 
@@ -55,6 +57,22 @@ export class AuthService {
     )
   }
 
+  getLoyaltyPrograms(): Observable<LoyaltyProgram[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<{ loyaltyPrograms: LoyaltyProgram[] }>('http://localhost:8080/api/loyalty_programs', { headers })
+      .pipe(
+        map(response => response.loyaltyPrograms), 
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            this.hasErrors = true;
+            return throwError('Unauthorized access');
+          } else {
+            return throwError('An error occurred while fetching loyalty programs');
+          }
+        })
+      );
+  }
+
   addLoyaltyProgram(program: {loyaltyProgramName: string}): Observable<any> {
     const headers = new HttpHeaders({'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getJwtToken()}`
@@ -62,15 +80,28 @@ export class AuthService {
     return this.http.post<any>('http://localhost:8080/api/loyalty_programs', program, { headers })
   }
   
+  sendInvitation(loyaltyProgramUuid: string, clientEmail: string): Observable<any> {
+    const url = `http://localhost:8080/api/loyalty_programs/${loyaltyProgramUuid}/invitations`;
+    const body = { clientEmail };
+    const headers = this.getAuthHeaders();
+    return this.http.post<any>(url, body, { headers }).pipe(
+      
+    );
+  }
 
   private doLoginUser(email: string, token: string) {
     this.isAuthenticatedSubject.next(true);
     this.hasErrors = false;
     this.storeJwtToken(token);
+    this.storeUserEmail(email);
   }
 
   private storeJwtToken(jwt: string) {
     localStorage.setItem(this.JWT_TOKEN, jwt);
+  }
+
+  private storeUserEmail(email: string) {
+    localStorage.setItem(this.USER_EMAIL, email);
   }
 
   private getJwtToken(): string | null {
@@ -103,4 +134,26 @@ export class AuthService {
     return !!localStorage.getItem(this.JWT_TOKEN);
   }
 
+  getCurrentUserEmail(): string | null {
+    return localStorage.getItem(this.USER_EMAIL);
+  }
+
+}
+
+
+export interface LoyaltyProgram {
+  id: string;
+  name: string;
+  loyalty_levels: LoyaltyLevel[];
+}
+
+export interface LoyaltyLevel {
+  id: string;
+  name: string;
+  valueFactor: ValueFactor;
+  loyaltyProgram: string;
+}
+
+export interface ValueFactor {
+  valueFactor: number;
 }
