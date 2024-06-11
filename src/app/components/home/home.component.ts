@@ -96,6 +96,14 @@ export class HomeComponent {
     });
   }
 
+  addPromocode(levelId: string) {
+    this.authService.storeLevelId(levelId);
+    const programId = this.programs[this.index].id;
+    console.log(programId);
+    this.authService.storeProgramId(programId);
+    this.router.navigate(['/new-promocode']);
+  }
+
   logout() {
     this.authService.logout();
   }

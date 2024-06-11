@@ -34,7 +34,7 @@
               <thead class="table-dark">
                 <tr>
                   <th class="equal-width">Name</th>
-                  <th class="equal-width">Action</th>
+                  <th class="equal-width">Levels</th>
                 </tr>
               </thead>
               <tbody>
@@ -44,8 +44,7 @@
                     </td>
                     <td class="text-center">
                       <div class="btn-group">
-                        <a class="btn btn-primary me-1" (click)="handleLevels(i)">Levels</a>
-                        <a class="btn btn-danger">Delete</a> 
+                        <a class="btn btn-primary me-1" (click)="handleLevels(i)">See details</a> 
                       </div>
                     </td>
                 </tr>
@@ -54,32 +53,33 @@
           </div>
         </div>
 
-        <div *ngIf="chosenLevel && totalLoyaltyLevels > 0" class="row mt-5 justify-content-center">
-            <div class="col-xxl-7 col-xl-6">
+        <div *ngIf="chosenLevel && totalLoyaltyLevels > 0" class="row mt-5 justify-content-center" style="overflow: auto;">
+            <div class="col-xxl-8 col-xl-7">
               <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                   <tr>
-                    <th class="equal-width3">Name</th>
-                    <th class="equal-width3">Value</th>
-                    <th class="equal-width3">Action</th>
+                    <th style="width: 30%;">Name</th>
+                    <th style="width: 30%;">Value</th>
+                    <th style="width: 40%;">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let level of this.levels; let i = index">
-                    <td class="equal-width3 text-center">
+                    <td class="text-center" style="width: 30%;">
                       <div style="font-size: large;">
                           {{ level.name }}
                       </div>
                     </td>
-                    <td class="equal-width3 text-center">
+                    <td class="text-center" style="width: 30%;">
                         <div style="font-size: large;">
                             {{ level.valueFactor.valueFactor }}
                         </div>
                       </td>
-                    <td class="equal-width3 text-center">
-                      <div class="btn-group">
+                    <td class="text-center" style="width: 40%;">
+                      <div>
                         <a class="btn btn-primary me-1" (click)="editLevel(level.id, level.name, level.valueFactor.valueFactor)">Edit</a>
-                        <a class="btn btn-danger" (click)="confirmDeleteLevel(level.id)">Delete</a> 
+                        <a class="btn btn-success me-1" (click)="addPromocode(level.id)">Add Promocode</a>
+                        <a class="btn btn-danger" (click)="confirmDeleteLevel(level.id)">Delete</a>
                       </div>
                     </td>
                   </tr>

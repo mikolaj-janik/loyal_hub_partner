@@ -152,6 +152,21 @@ export class AuthService {
     );
   }
 
+  addPromoCode(loyaltyProgramUuid: string, loyaltyLevelUuid: string, promoCode: { type: string, valueFactor: number }): Observable<any> {
+    const url = `http://localhost:8080/api/loyalty_programs/${loyaltyProgramUuid}/loyalty_levels/${loyaltyLevelUuid}/promocodes`;
+    const headers = this.getAuthHeaders();
+    return this.http.post<any>(url, promoCode, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          this.hasErrors = true;
+          return throwError('Unauthorized access');
+        } else {
+          return throwError('An error occurred while adding the promo code');
+        }
+      })
+    );
+  }
+
   private doLoginUser(email: string, token: string) {
     this.isAuthenticatedSubject.next(true);
     this.hasErrors = false;

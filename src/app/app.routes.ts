@@ -7,6 +7,7 @@ import { NewLoyaltyComponent } from './components/new-loyalty/new-loyalty.compon
 import { InvitationComponent } from './components/invitation/invitation.component';
 import { AddNewLevelComponent } from './components/add-new-level/add-new-level.component';
 import { EditLevelComponent } from './components/edit-level/edit-level.component';
+import { PromocodeComponent } from './components/promocode/promocode.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent, canActivate: [authGuard]},
@@ -14,6 +15,7 @@ export const routes: Routes = [
     {path: 'invitations', component: InvitationComponent, canActivate: [authGuard]},
     {path: 'new-level', component: AddNewLevelComponent, canActivate: [authGuard]},
     {path: 'edit-level', component: EditLevelComponent, canActivate: [authGuard]},
+    {path: 'new-promocode', component: PromocodeComponent, canActivate: [authGuard]},
     {path: 'login', component: LoginComponent },
     {path: 'register', component: RegisterComponent },
 ];

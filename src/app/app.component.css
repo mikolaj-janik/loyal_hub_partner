@@ -7,3 +7,7 @@
     padding-right: 35px;
     text-align: center;
   }
+  .scrollable-container {
+    height: calc(100vh - 58.59px); 
+    overflow: auto;
+  }
