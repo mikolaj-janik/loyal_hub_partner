@@ -2,6 +2,9 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, tap, throwError } from 'rxjs';
+import { ValueFactor } from '../entity/value-factor';
+import { LoyaltyLevel } from '../entity/loyalty-level';
+import { LoyaltyProgram } from '../entity/loyalty-program';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +13,10 @@ export class AuthService {
 
   private readonly JWT_TOKEN = 'JWT_TOKEN';
   private readonly USER_EMAIL = 'USER_EMAIL';
-  private readonly PROGRAM_ID = 'PROGRAM_ID'
+  private readonly PROGRAM_ID = 'PROGRAM_ID';
+  private readonly LEVEL_ID = 'LEVEL_ID';
+  private readonly LEVEL_NAME = 'LEVEL_NAME';
+  private readonly LEVEL_VALUE = 'LEVEL_VALUE';
   private hasErrors = false;
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
   public isLoggedIn$ = this.isAuthenticatedSubject.asObservable();
@@ -47,7 +53,7 @@ export class AuthService {
       tap((tokens: any) => {
         this.doLoginUser(user.email, tokens.token)}),
       catchError((error) => {
-        if (error.status === 401) {
+        if (error.status === 400 || error.status === 401) {
           this.hasErrors = true;
           return throwError('Invalid email or password');
         } else {
@@ -60,12 +66,20 @@ export class AuthService {
 
   getLoyaltyPrograms(): Observable<LoyaltyProgram[]> {
     const headers = this.getAuthHeaders();
-    return this.http.get<{ loyaltyPrograms: LoyaltyProgram[] }>('http://localhost:8080/api/loyalty_programs', { headers })
+    return this.http.get<{ loyaltyPrograms: any[] }>('http://localhost:8080/api/loyalty_programs', { headers })
       .pipe(
-        map(response => response.loyaltyPrograms), 
+        map(response => response.loyaltyPrograms.map(program => new LoyaltyProgram(
+          program.id,
+          program.name,
+          program.loyaltyLevels ? program.loyaltyLevels.map((level: any) => new LoyaltyLevel(
+            level.id,
+            level.name,
+            new ValueFactor(level.valueFactor.valueFactor),  
+            level.loyaltyProgram
+          )) : []
+        ))),
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
-            this.hasErrors = true;
             return throwError('Unauthorized access');
           } else {
             return throwError('An error occurred while fetching loyalty programs');
@@ -96,7 +110,39 @@ export class AuthService {
         })
       );
   }
+
+  updateLoyaltyLevel(loyaltyProgramUuid: string, loyaltyLevelUuid: string, loyaltyLevel: { loyaltyLevelName: string, valueFactor: number }): Observable<any> {
+    const url = `http://localhost:8080/api/loyalty_programs/${loyaltyProgramUuid}/loyalty_program_levels/${loyaltyLevelUuid}`;
+    const headers = this.getAuthHeaders();
+    return this.http.put<any>(url, loyaltyLevel, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            this.hasErrors = true;
+            return throwError('Unauthorized access');
+          } else {
+            return throwError('An error occurred while updating the loyalty level');
+          }
+        })
+      );
+  }
   
+  deleteLoyaltyLevel(loyaltyProgramUuid: string, loyaltyLevelUuid: string): Observable<any> {
+    const url = `http://localhost:8080/api/loyalty_programs/${loyaltyProgramUuid}/loyalty_program_levels/${loyaltyLevelUuid}`;
+    const headers = this.getAuthHeaders();
+    return this.http.delete<any>(url, { headers })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          if (error.status === 401) {
+            this.hasErrors = true;
+            return throwError('Unauthorized access');
+          } else {
+            return throwError('An error occurred while deleting the loyalty level');
+          }
+        })
+      );
+  }
+
   sendInvitation(loyaltyProgramUuid: string, clientEmail: string): Observable<any> {
     const url = `http://localhost:8080/api/loyalty_programs/${loyaltyProgramUuid}/invitations`;
     const body = { clientEmail };
@@ -164,22 +210,29 @@ export class AuthService {
     return localStorage.getItem(this.PROGRAM_ID);
   }
 
+  storeLevelId(levelId: string) {
+    localStorage.setItem(this.LEVEL_ID, levelId);
+  }
+
+  getCurrentLevelId(): string | null {
+    return localStorage.getItem(this.LEVEL_ID);
+  }
+
+  storeLevelName(levelName: string) {
+    localStorage.setItem(this.LEVEL_NAME, levelName);
+  }
+
+  getCurrentLevelName(): string | null {
+    return localStorage.getItem(this.LEVEL_NAME);
+  }
+
+  storeLevelValue(levelValue: string) {
+    localStorage.setItem(this.LEVEL_VALUE, levelValue);
+  }
+
+  getCurrentLevelValue(): string | null {
+    return localStorage.getItem(this.LEVEL_VALUE);
+  }
 }
 
 
-export interface LoyaltyProgram {
-  id: string;
-  name: string;
-  loyalty_levels: LoyaltyLevel[];
-}
-
-export interface LoyaltyLevel {
-  id: string;
-  name: string;
-  valueFactor: ValueFactor;
-  loyaltyProgram: string;
-}
-
-export interface ValueFactor {
-  valueFactor: number;
-}

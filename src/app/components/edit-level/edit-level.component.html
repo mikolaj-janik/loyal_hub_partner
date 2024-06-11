@@ -1,9 +1,9 @@
 <div class="row justify-content-center" style="margin-top: 80px;">
     <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-8 rounded-5 py-2 px-4" style="background-color: aliceblue; margin-top: 110px;">
         <div class="col">
-            <h3 class="mt-3 mb-3" style="color: rgb(100, 100, 100); font-weight: 300;">Add new level</h3>
+            <h3 class="mt-3 mb-3" style="color: rgb(100, 100, 100); font-weight: 300;">Edit level</h3>
         </div>
-        <form [formGroup]="levelForm" (ngSubmit)="addNewLevel()">
+        <form [formGroup]="levelForm" (submit)="saveChanges()">
             <div class="form-group mb-3">
               <label for="loyaltyLevelName">Loyalty Level Name</label>
               <input type="text" id="loyaltyLevelName" formControlName="loyaltyLevelName" class="form-control">
@@ -21,6 +21,6 @@
               </div>
             </div>
           
-            <button type="submit" class="btn btn-primary mb-3" [disabled]="levelForm.invalid">Add Level</button>
+            <button type="submit" class="btn btn-primary mb-3" [disabled]="levelForm.invalid">Save changes</button>
           </form>
 </div>

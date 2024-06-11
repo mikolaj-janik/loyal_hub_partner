@@ -4,7 +4,7 @@
             <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-8 rounded-5 py-2 px-4" style="background-color: aliceblue; margin-top: 110px;">
                 <div class="col">
                     <h3 *ngIf="!chosenLevel" class="mt-3 mb-3" style="color: rgb(100, 100, 100); font-weight: 400;">Your loyalty programs</h3>
-                    <h3 *ngIf="chosenLevel" class="mt-3 mb-3" style="color: rgb(100, 100, 100); font-weight: 400;">{{ programName }}: levels</h3>
+                    <h3 *ngIf="chosenLevel" class="mt-3 mb-3" style="color: rgb(100, 100, 100); font-weight: 400;">Levels: {{ programName }}</h3>
                 </div>
                 <div class="row mb-3">
                   <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 btn-group shadow-0">
@@ -12,8 +12,10 @@
                   </div>
                 </div>
                 <div class="row mb-2">
-                  <span *ngIf="!chosenLevel">You have a total of {{ totalLoyaltyPrograms }} loyalty programs</span>
-                  <span *ngIf="chosenLevel">There is a total of {{ totalLoyaltyLevels }} levels</span>
+                  <span *ngIf="!chosenLevel && totalLoyaltyPrograms === 1">You have a total of {{ totalLoyaltyPrograms }} loyalty program</span>
+                  <span *ngIf="!chosenLevel && totalLoyaltyPrograms != 1">You have a total of {{ totalLoyaltyPrograms }} loyalty programs</span>
+                  <span *ngIf="chosenLevel && totalLoyaltyLevels === 1">There is a total of {{ totalLoyaltyLevels }} level</span>
+                  <span *ngIf="chosenLevel && totalLoyaltyLevels != 1">There is a total of {{ totalLoyaltyLevels }} levels</span>
                 </div>
                 <div class="row">
                   <div *ngIf="chosenLevel" div class="col-2 me-4">
@@ -52,8 +54,8 @@
           </div>
         </div>
 
-        <div *ngIf="chosenLevel" class="row mt-5 justify-content-center">
-            <div class="col-xxl-6 col-xl-5">
+        <div *ngIf="chosenLevel && totalLoyaltyLevels > 0" class="row mt-5 justify-content-center">
+            <div class="col-xxl-7 col-xl-6">
               <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                   <tr>
@@ -76,8 +78,8 @@
                       </td>
                     <td class="equal-width3 text-center">
                       <div class="btn-group">
-                        <a class="btn btn-primary me-1" (click)="handleLevels(i)">Edit</a>
-                        <a class="btn btn-danger" (click)="handleDeleteLevel(i)">Delete</a> 
+                        <a class="btn btn-primary me-1" (click)="editLevel(level.id, level.name, level.valueFactor.valueFactor)">Edit</a>
+                        <a class="btn btn-danger" (click)="confirmDeleteLevel(level.id)">Delete</a> 
                       </div>
                     </td>
                   </tr>
@@ -90,6 +92,14 @@
           <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-8">
             <h3 style="font-weight: 400;">
               Your program list is empty!
+            </h3>
+          </div>
+        </div>
+
+        <div *ngIf="chosenLevel && totalLoyaltyLevels === 0" class="row mt-4 justify-content-center">
+          <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-8">
+            <h3 style="font-weight: 400;">
+              Your levels list is empty!
             </h3>
           </div>
         </div>

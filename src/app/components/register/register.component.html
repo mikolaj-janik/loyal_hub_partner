@@ -25,11 +25,11 @@
       <div *ngIf="registerForm.errors?.['passwordMismatch']" class="alert alert-danger mt-1">
         Passwords do not match!
       </div>
-
+      
       <div *ngIf="authService.isError()" class="alert alert-danger mt-1">
-        <span>Incorrect email or password</span>
+        <span>Such email already exists!</span>
       </div>
-    
+
       <button class="btn btn-primary" type="submit">Sign up</button>
 
       <hr style="color: gray;">

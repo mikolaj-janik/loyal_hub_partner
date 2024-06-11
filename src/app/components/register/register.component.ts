@@ -38,7 +38,6 @@ export class RegisterComponent {
   register() {
     if (this.registerForm.valid) {
       const { email, password, repeatedPassword } = this.registerForm.value;
-      console.log(`Login: ${this.email} / ${password}`);
       this.authService
     .register({
       email: email as string,
